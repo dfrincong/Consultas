@@ -35,7 +35,7 @@
 6. Lista la dirección de las oficinas que tengan clientes en Fuenlabrada.
 
     ```sql
-    SELECT CONCAT(o.linea_direccion1,' ',o.linea_direccion2) 'dirección oficinas en Fuenlabrada' FROM cliente c INNER JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado INNER JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE c.ciudad = 'Fuenlabrada';
+    SELECT DISTINCT CONCAT(o.linea_direccion1,' ',o.linea_direccion2) 'dirección oficinas en Fuenlabrada' FROM cliente c INNER JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado INNER JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE c.ciudad = 'Fuenlabrada';
     ```
 
 7. Devuelve el nombre de los clientes y el nombre de sus representantes junto con la ciudad de la oficina a la que pertenece el representante.
@@ -55,13 +55,18 @@
 9. Devuelve un listado que muestre el nombre de cada empleados, el nombre de su jefe y el nombre del jefe de sus jefe.
 
     ```sql
-    SELECT emp.nombre 'nombre empleado', emp.codigo_jefe, jef.nombre 'nombre del jefe', jef.codigo_jefe, jefdjef.nombre 'nombre del jefe del jefe' FROM empleado emp LEFT JOIN empleado jef ON emp.codigo_jefe = jef.codigo_empleado LEFT JOIN empleado jefdjef ON jef.codigo_jefe = jefdjef.codigo_empleado;
+    SELECT emp.nombre 'nombre empleado', jef.nombre 'nombre del jefe', jefdjef.nombre 'nombre del jefe del jefe' FROM empleado emp LEFT JOIN empleado jef ON emp.codigo_jefe = jef.codigo_empleado LEFT JOIN empleado jefdjef ON jef.codigo_jefe = jefdjef.codigo_empleado;
     ```
 
 10. Devuelve el nombre de los clientes a los que no se les ha entregado a tiempo un pedido.
 
     ```sql
+    -- primera opción agregando las fechas de entrega que aparecen como NULL
     SELECT DISTINCT c.nombre_cliente FROM cliente c LEFT JOIN pedido p ON c.codigo_cliente = p.codigo_cliente WHERE p.fecha_entrega > p.fecha_esperada;
+    -- segunda opción agregando las fechas de entrega que aparecen como NULL
+    SELECT DISTINCT c.nombre_cliente, p.fecha_esperada, p.fecha_entrega, p.estado, p.comentarios FROM cliente c LEFT JOIN pedido p ON c.codigo_cliente = p.codigo_cliente WHERE (p.fecha_entrega > p.fecha_esperada) OR ((p.fecha_entrega IS NULL) AND (p.estado = 'Entregado'));
+    -- tercera opción (del profe Miguel para analizar si le falta algo más a la consulta)
+    SELECT DISTINCT c.nombre_cliente, p.fecha_esperada, p.fecha_entrega, p.estado, p.comentarios FROM cliente c LEFT JOIN pedido p ON c.codigo_cliente = p.codigo_cliente WHERE p.estado = 'Pendiente';
     ```
 
 11. Devuelve un listado de las diferentes gamas de producto que ha comprado cada cliente.
