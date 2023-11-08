@@ -3,19 +3,21 @@
 1. Obtén un listado con el nombre de cada cliente y el nombre y apellido de su representante de ventas.
 
     ```sql
-
+    SELECT c.nombre_cliente, CONCAT(e.nombre,' ', e.apellido1) AS nombre_rep_ventas FROM cliente c, empleado e WHERE c.codigo_empleado_rep_ventas = e.codigo_empleado;
+    -- segunda opción
+    SELECT c.nombre_cliente, CONCAT(e.nombre,' ', e.apellido1) AS nombre_rep_ventas FROM cliente c INNER JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado;
     ```
 
 2. Muestra el nombre de los clientes que hayan realizado pagos junto con el nombre de sus representantes de ventas.
 
     ```sql
-
+    SELECT DISTINCT c.nombre_cliente, e.nombre FROM cliente c INNER JOIN pago p ON p.codigo_cliente = c.codigo_cliente INNER JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado;
     ```
 
 3. Muestra el nombre de los clientes que no hayan realizado pagos junto con el nombre de sus representantes de ventas.
 
     ```sql
-
+    SELECT c.nombre_cliente, e.nombre FROM cliente c LEFT JOIN pago p ON p.codigo_cliente = c.codigo_cliente INNER JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado WHERE p.codigo_cliente IS NULL;
     ```
 
 4. Devuelve el nombre de los clientes que han hecho pagos y el nombre de sus representantes junto con la ciudad de la oficina a la que pertenece el representante.
