@@ -55,17 +55,17 @@
 9. Devuelve un listado que muestre el nombre de cada empleados, el nombre de su jefe y el nombre del jefe de sus jefe.
 
     ```sql
-    
+    SELECT emp.nombre 'nombre empleado', emp.codigo_jefe, jef.nombre 'nombre del jefe', jef.codigo_jefe, jefdjef.nombre 'nombre del jefe del jefe' FROM empleado emp LEFT JOIN empleado jef ON emp.codigo_jefe = jef.codigo_empleado LEFT JOIN empleado jefdjef ON jef.codigo_jefe = jefdjef.codigo_empleado;
     ```
 
 10. Devuelve el nombre de los clientes a los que no se les ha entregado a tiempo un pedido.
 
     ```sql
-    
+    SELECT DISTINCT c.nombre_cliente FROM cliente c LEFT JOIN pedido p ON c.codigo_cliente = p.codigo_cliente WHERE p.fecha_entrega > p.fecha_esperada;
     ```
 
 11. Devuelve un listado de las diferentes gamas de producto que ha comprado cada cliente.
 
     ```sql
-    
+    SELECT  DISTINCT c.nombre_cliente, g.gama FROM cliente c INNER JOIN pedido p ON c.codigo_cliente = p.codigo_cliente INNER JOIN detalle_pedido d ON p.codigo_pedido = d.codigo_pedido INNER JOIN producto pro ON d.codigo_producto = pro.codigo_producto INNER JOIN gama_producto g ON pro.gama = g.gama;
     ```
