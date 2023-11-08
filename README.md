@@ -1,4 +1,6 @@
-# Consultas multitabla
+# Consultas multitabla Jardinería
+
+## Composición interna
 
 1. Obtén un listado con el nombre de cada cliente y el nombre y apellido de su representante de ventas.
 
@@ -73,4 +75,79 @@
 
     ```sql
     SELECT  DISTINCT c.nombre_cliente, g.gama FROM cliente c INNER JOIN pedido p ON c.codigo_cliente = p.codigo_cliente INNER JOIN detalle_pedido d ON p.codigo_pedido = d.codigo_pedido INNER JOIN producto pro ON d.codigo_producto = pro.codigo_producto INNER JOIN gama_producto g ON pro.gama = g.gama;
+    ```
+
+## Composición externa
+
+
+1. Devuelve un listado que muestre solamente los clientes que no han realizado ningún pago.
+
+    ```sql
+    SELECT c.codigo_cliente, c.nombre_cliente FROM cliente c LEFT JOIN pago p ON p.codigo_cliente = c.codigo_cliente WHERE p.codigo_cliente IS NULL;
+    ```
+
+2. Devuelve un listado que muestre solamente los clientes que no han realizado ningún pedido.
+
+    ```sql
+    SELECT c.codigo_cliente, c.nombre_cliente FROM cliente c LEFT JOIN pedido p ON p.codigo_cliente = c.codigo_cliente WHERE p.codigo_cliente IS NULL;
+    ```
+
+3. Devuelve un listado que muestre los clientes que no han realizado ningún pago y los que no han realizado ningún pedido.
+
+    ```sql
+    SELECT c.codigo_cliente, c.nombre_cliente FROM cliente c LEFT JOIN pago pa ON pa.codigo_cliente = c.codigo_cliente LEFT JOIN pedido pe ON pe.codigo_cliente = c.codigo_cliente WHERE pa.codigo_cliente IS NULL AND pe.codigo_cliente IS NULL;
+    ```
+
+4. Devuelve un listado que muestre solamente los empleados que no tienen una oficina asociada.
+
+    ```sql
+    SELECT e.codigo_empleado, e.nombre FROM empleado e LEFT JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE o.codigo_oficina IS NULL;
+    ```
+
+5. Devuelve un listado que muestre solamente los empleados que no tienen un cliente asociado.
+
+    ```sql
+    SELECT c.codigo_cliente, e.codigo_empleado, e.nombre FROM empleado e LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas WHERE c.codigo_empleado_rep_ventas IS NULL;
+    ```
+
+6. Devuelve un listado que muestre solamente los empleados que no tienen un cliente asociado junto con los datos de la oficina donde trabajan.
+
+    ```sql
+
+    ```
+
+7. Devuelve un listado que muestre los empleados que no tienen una oficina asociada y los que no tienen un cliente asociado.
+
+    ```sql
+
+    ```
+
+8. Devuelve un listado de los productos que nunca han aparecido en un pedido.
+
+    ```sql
+
+    ```
+
+9. Devuelve un listado de los productos que nunca han aparecido en un pedido. El resultado debe mostrar el nombre, la descripción y la imagen del producto.
+
+    ```sql
+
+    ```
+
+10. Devuelve las oficinas donde no trabajan ninguno de los empleados que hayan sido los representantes de ventas de algún cliente que haya realizado la compra de algún producto de la gama Frutales.
+
+    ```sql
+
+    ```
+
+11. Devuelve un listado con los clientes que han realizado algún pedido pero no han realizado ningún pago.
+
+    ```sql
+
+    ```
+
+12. Devuelve un listado con los datos de los empleados que no tienen clientes asociados y el nombre de su jefe asociado.
+
+    ```sql
+
     ```
