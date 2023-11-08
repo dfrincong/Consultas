@@ -48,17 +48,21 @@
 10. Lista los nombres y los precios de todos los `productos` de la tabla producto, truncando el valor del precio para mostrarlo sin ninguna cifra decimal.
 
     ```sql
-    # Consulta Aqui
+    SELECT nombre, TRUNCATE(precio,0) FROM producto;
     ```
 11. Lista el identificador de los fabricantes que tienen productos en la tabla `producto`.
 
     ```sql
     SELECT id_fabricante FROM producto;
+    -- segunda opción
+    SELECT f.id FROM fabricante AS f INNER JOIN producto AS p ON f.id = p.id_fabricante;
     ```
 12. Lista el identificador de los fabricantes que tienen `productos` en la tabla producto, eliminando los identificadores que aparecen repetidos.
 
     ```sql
-    # Consulta Aqui
+    SELECT id_fabricante FROM producto GROUP BY id_fabricante;
+    -- segunda opción
+    SELECT f.id FROM fabricante AS f INNER JOIN producto AS p ON f.id = p.id_fabricante GROUP BY f.id;
     ```
 13. Lista los nombres de los fabricantes ordenados de forma ascendente.
 
@@ -73,17 +77,21 @@
 15. Lista los nombres de los productos ordenados en primer lugar por el nombre de forma ascendente y en segundo lugar por el precio de forma descendente.
 
     ```sql
-    # Consulta Aqui
+    SELECT nombre FROM producto ORDER BY nombre ASC, precio DESC;
     ```
 16. Devuelve una lista con las 5 primeras filas de la tabla `fabricante`.
 
     ```sql
     SELECT * FROM fabricante WHERE id <= 5;
+    -- segunda opción (mejor)
+    SELECT * FROM fabricante LIMIT 5;
     ```
 17. Devuelve una lista con 2 filas a partir de la cuarta fila de la tabla `fabricante`. La cuarta fila también se debe incluir en la respuesta.
 
     ```sql
     SELECT * FROM fabricante WHERE id BETWEEN 4 AND 5;
+    -- segunda opción (mejor)
+    SELECT * FROM fabricante LIMIT 2 OFFSET 3;
     ```
 18. Lista el nombre y el precio del producto más barato. (Utilice solamente las cláusulas `ORDER BY` y `LIMIT`)
 
@@ -98,5 +106,7 @@
 20. Lista el nombre de todos los productos del fabricante cuyo identificador de fabricante es igual a 2.
 
     ```sql
-    SELECT * FROM producto WHERE id_fabricante = 2;
+    SELECT nombre FROM producto WHERE id_fabricante = 2;
+    -- segunda opción
+    SELECT p.nombre FROM producto AS p INNER JOIN fabricante AS f ON p.id_fabricante = f.id WHERE p.id_fabricante = 2;
     ```
