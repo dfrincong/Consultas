@@ -125,29 +125,36 @@
 8. Devuelve un listado de los productos que nunca han aparecido en un pedido.
 
     ```sql
-
+    SELECT pro.codigo_producto, pro.nombre FROM producto pro LEFT JOIN detalle_pedido d ON pro.codigo_producto = d.codigo_producto WHERE d.codigo_producto IS NULL;
     ```
 
 9. Devuelve un listado de los productos que nunca han aparecido en un pedido. El resultado debe mostrar el nombre, la descripción y la imagen del producto.
 
     ```sql
-
+    SELECT pro.nombre, pro.descripcion, g.imagen FROM producto pro LEFT JOIN detalle_pedido d ON pro.codigo_producto = d.codigo_producto INNER JOIN gama_producto g ON pro.gama = g.gama WHERE d.codigo_producto IS NULL;
     ```
 
 10. Devuelve las oficinas donde no trabajan ninguno de los empleados que hayan sido los representantes de ventas de algún cliente que haya realizado la compra de algún producto de la gama Frutales.
 
     ```sql
-
+    SELECT o.codigo_oficina FROM oficina o 
+    LEFT JOIN empleado e ON o.codigo_oficina = e.codigo_oficina 
+    INNER JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas 
+    INNER JOIN pedido p ON c.codigo_cliente = p.codigo_cliente 
+    INNER JOIN detalle_pedido d ON p.codigo_pedido = d.codigo_pedido 
+    INNER JOIN producto pro ON d.codigo_producto = pro.codigo_producto 
+    INNER JOIN gama_producto g ON pro.gama = g.gama 
+    WHERE e.codigo_oficina IS NULL AND g.gama = 'Frutales';
     ```
 
 11. Devuelve un listado con los clientes que han realizado algún pedido pero no han realizado ningún pago.
 
     ```sql
-
+    SELECT DISTINCT c.codigo_cliente, c.nombre_cliente FROM pago pa RIGHT JOIN cliente c ON pa.codigo_cliente = c.codigo_cliente INNER JOIN pedido pe ON c.codigo_cliente = pe.codigo_cliente WHERE pa.codigo_cliente IS NULL;
     ```
 
 12. Devuelve un listado con los datos de los empleados que no tienen clientes asociados y el nombre de su jefe asociado.
 
     ```sql
-
+    SELECT emp.* FROM empleado emp LEFT JOIN empleado jef ON emp.codigo_jefe = jef.codigo_empleado LEFT JOIN cliente c ON emp.codigo_empleado = c.codigo_empleado_rep_ventas WHERE c.codigo_empleado_rep_ventas IS NULL;
     ```
