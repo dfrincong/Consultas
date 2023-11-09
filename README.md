@@ -165,11 +165,11 @@
 
     ```sql
     -- primera opción
-    -- SELECT codigo_cliente FROM pago WHERE fecha_pago = YEAR('2008');
+    SELECT DISTINCT codigo_cliente FROM pago WHERE YEAR(fecha_pago) = '2008';
     -- segunda opción
-    -- SELECT;
+    SELECT DISTINCT codigo_cliente FROM pago WHERE DATE_FORMAT(fecha_pago, "%Y") = '2008';
     -- tercera opción
-    -- SELECT codigo_cliente FROM pago WHERE fecha_pago BETWEEN '2008-12-31' AND '2008-01-01';
+    SELECT DISTINCT codigo_cliente FROM pago WHERE fecha_pago BETWEEN '2008-01-01' AND '2008-12-31';
     ```
 
 9. Devuelve un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos que no han sido entregados a tiempo.
@@ -186,9 +186,9 @@
 
     ```sql
     -- primera opcion
-    -- SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido;
+    SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega <= ADDDATE(fecha_esperada, INTERVAL -2 DAY);
     -- segunda opción
-    -- SELECT;
+    SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega <= DATEDIFF(fecha_esperada, fecha_entrega);
     -- tercera opción
     -- SELECT codigo_pedido;
     ```
@@ -202,7 +202,7 @@
 12. Devuelve un listado de todos los pedidos que han sido entregados en el mes de enero de cualquier año.
 
     ```sql
-    -- SELECT * FROM pedido WHERE fecha_entrega ;
+    SELECT * FROM pedido WHERE DATE_FORMAT(fecha_entrega, "%m") = '01';
     ```
 
 13. Devuelve un listado con todos los pagos que se realizaron en el año 2008 mediante Paypal. Ordene el resultado de mayor a menor.
