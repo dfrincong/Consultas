@@ -107,19 +107,19 @@
 5. Devuelve un listado que muestre solamente los empleados que no tienen un cliente asociado.
 
     ```sql
-    SELECT c.codigo_cliente, e.codigo_empleado, e.nombre FROM empleado e LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas WHERE c.codigo_empleado_rep_ventas IS NULL;
+    SELECT e.codigo_empleado, e.nombre FROM empleado e LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas WHERE c.codigo_empleado_rep_ventas IS NULL;
     ```
 
 6. Devuelve un listado que muestre solamente los empleados que no tienen un cliente asociado junto con los datos de la oficina donde trabajan.
 
     ```sql
-
+    SELECT e.codigo_empleado, e.nombre, o.* FROM empleado e LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas INNER JOIN oficina o ON e.codigo_oficina = o.codigo_oficina WHERE c.codigo_empleado_rep_ventas IS NULL;
     ```
 
 7. Devuelve un listado que muestre los empleados que no tienen una oficina asociada y los que no tienen un cliente asociado.
 
     ```sql
-
+    SELECT o.codigo_oficina, c.codigo_cliente, e.nombre FROM empleado e LEFT JOIN oficina o ON e.codigo_oficina = o.codigo_oficina LEFT JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas WHERE o.codigo_oficina IS NULL AND c.codigo_empleado_rep_ventas IS NULL;
     ```
 
 8. Devuelve un listado de los productos que nunca han aparecido en un pedido.
