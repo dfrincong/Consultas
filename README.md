@@ -1,6 +1,6 @@
 # Consultas sobre una tabla
 
-## Primera parte
+## Primera parte (Simulacro tienda_informatica)
 
 1. Lista el nombre de todos los productos que hay en la tabla `producto`.
 
@@ -113,7 +113,7 @@
     SELECT p.nombre FROM producto AS p INNER JOIN fabricante AS f ON p.id_fabricante = f.id WHERE p.id_fabricante = 2;
     ```
 
-## Segunda parte
+## Segunda parte (Jardineria)
 
 1. Devuelve un listado con el código de oficina y la ciudad donde hay oficinas.
 
@@ -188,9 +188,9 @@
     -- primera opcion
     SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega <= ADDDATE(fecha_esperada, INTERVAL -2 DAY);
     -- segunda opción
-    SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega <= DATEDIFF(fecha_esperada, fecha_entrega);
+    SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE DATEDIFF(fecha_entrega,fecha_esperada) <= -2;
     -- tercera opción
-    -- SELECT codigo_pedido;
+    SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega <= fecha_esperada - INTERVAL 2 DAY;
     ```
 
 11. Devuelve un listado de todos los pedidos que fueron rechazados en 2009.
