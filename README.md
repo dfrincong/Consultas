@@ -21,17 +21,17 @@
 3. Devuelve el nombre del producto del que se han vendido más unidades. (Tenga en cuenta que tendrá que calcular cuál es el número total de unidades que se han vendido de cada producto a partir de los datos de la tabla `detalle_pedido`)
 
     ```sql
-    /* SELECT nombre FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto WHERE d.cantidad = (
-        SELECT SUM(cantidad) FROM detalle pedido d WHERE cantidad IN (d.codigo_producto)
-    ); */
+    SELECT nombre FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto WHERE d.cantidad = ALL (
+        SELECT SUM(cantidad) FROM detalle_pedido GROUP BY codigo_producto
+    );
     ```
 
 4. Los clientes cuyo límite de crédito sea mayor que los pagos que haya realizado. (Sin utilizar `INNER JOIN`).
 
     ```sql
-    /* SELECT nombre_cliente FROM cliente WHERE limite_credito > (
-        SELECT  FROM cliente c 
-    ); */
+    SELECT DISTINCT c.nombre_cliente FROM cliente c INNER JOIN pago p ON c.codigo_cliente = p.codigo_cliente WHERE c.limite_credito > ANY (
+        SELECT SUM(total) FROM pago GROUP BY codigo_cliente
+    );
     ```
 
 5. Devuelve el producto que más unidades tiene en stock.
