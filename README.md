@@ -21,17 +21,17 @@
 3. Devuelve el nombre del producto del que se han vendido más unidades. (Tenga en cuenta que tendrá que calcular cuál es el número total de unidades que se han vendido de cada producto a partir de los datos de la tabla `detalle_pedido`)
 
     ```sql
-    SELECT nombre FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto WHERE d.cantidad = ALL (
-        SELECT SUM(cantidad) FROM detalle_pedido GROUP BY codigo_producto
-    ); -- p
+    SELECT p.nombre FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto GROUP BY d.codigo_producto HAVING SUM(d.cantidad) = (
+        SELECT MAX(suma) FROM (SELECT SUM(d.cantidad) suma FROM detalle_pedido d GROUP BY d.codigo_producto) AS total_unidades
+    );
     ```
 
 4. Los clientes cuyo límite de crédito sea mayor que los pagos que haya realizado. (Sin utilizar `INNER JOIN`).
 
     ```sql
-    SELECT DISTINCT c.nombre_cliente FROM cliente c INNER JOIN pago p ON c.codigo_cliente = p.codigo_cliente WHERE c.limite_credito > ANY (
-        SELECT SUM(total) FROM pago GROUP BY codigo_cliente
-    ); -- p
+    SELECT c.* FROM cliente c WHERE c.limite_credito > (
+        SELECT SUM(p.total) FROM pago p WHERE c.codigo_cliente = p.codigo_cliente GROUP BY p.codigo_cliente
+    );
     ```
 
 5. Devuelve el producto que más unidades tiene en stock.
@@ -151,23 +151,23 @@
 1. Devuelve un listado que muestre solamente los clientes que no han realizado ningún pago.
 
     ```sql
-    
+    SELECT * FROM cliente c WHERE NOT EXISTS (SELECT * FROM  pago p WHERE c.codigo_cliente = p.codigo_cliente);
     ```
 
 2. Devuelve un listado que muestre solamente los clientes que sí han realizado algún pago.
 
     ```sql
-    
+    SELECT * FROM cliente c WHERE EXISTS (SELECT * FROM  pago p WHERE c.codigo_cliente = p.codigo_cliente);
     ```
 
 3. Devuelve un listado de los productos que nunca han aparecido en un pedido.
 
     ```sql
-    
+    SELECT * FROM producto p WHERE NOT EXISTS (SELECT * FROM detalle_pedido d WHERE p.codigo_producto = d.codigo_producto);
     ```
 
 4. Devuelve un listado de los productos que han aparecido en un pedido alguna vez.
 
     ```sql
-    
+    SELECT * FROM producto p WHERE EXISTS (SELECT * FROM detalle_pedido d WHERE p.codigo_producto = d.codigo_producto);
     ```
