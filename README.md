@@ -14,6 +14,8 @@ A continuación listaré cada una de las ramas de este repositorio y que contien
 
 4. En la rama `subconsultas` se encuentra la documentación sobre subconsultas de la base de datos de jardinería.
 
+5. En la rama `tips` se encuentra la documentación sobre los videos de tips encontrados en recursos sql en discord. Se ejemplificaran los tips utilizando la base de datos de jardinería.
+
 ---
 
 ## Autor
