@@ -67,9 +67,7 @@ A continuación se mostraran algunos tips con SELECT, WHERE, GROUP BY y UPDATE p
 4. REGEX
 
     ```sql
-    SELECT nombre_contacto FROM cliente WHERE nombre_contacto LIKE '%[aeo]';  -- no funciona
-    SELECT nombre_contacto FROM cliente WHERE nombre_contacto LIKE ('%a','%e','%o'); -- no funciona
-    SELECT nombre_contacto FROM cliente WHERE nombre_contacto LIKE '%a' OR nombre_contacto LIKE '%e' OR nombre_contacto LIKE '%o';
+    SELECT nombre_contacto FROM cliente WHERE nombre_contacto REGEXP '[aeo]$';
     ```
 
 5. IN y subconsulta
@@ -84,3 +82,48 @@ A continuación se mostraran algunos tips con SELECT, WHERE, GROUP BY y UPDATE p
     SELECT * FROM pedido WHERE SUBSTRING(estado,1,1) = 'E';
     ```
 
+---
+
+## TIPS con GROUP BY
+
+1. Multiple agrupamiento
+
+    ```sql
+    SELECT p.gama, p.dimensiones, COUNT(d.cantidad) total FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto GROUP BY p.gama, p.dimensiones ORDER BY p.gama ASC;
+    ```
+
+2. Filtrar por aggregate functions
+    ```sql
+    SELECT p.gama, p.dimensiones, COUNT(d.cantidad) total FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto GROUP BY p.gama, p.dimensiones HAVING total > 10 ORDER BY p.gama ASC;
+    ```
+
+3. Agrupado por funciones escalares
+
+    ```sql
+    SELECT SUBSTRING(p.nombre,1,3) iniciales_producto, p.nombre FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto GROUP BY iniciales_producto, p.nombre ORDER BY iniciales_producto DESC;
+    ```
+
+4. Agrupado con UNION ALL
+
+    ```sql
+    SELECT columna , COUNT(*) FROM
+        (SELECT p.forma_pago columna FROM cliente c INNER JOIN pago p ON c.codigo_cliente = p.codigo_cliente
+        UNION ALL
+        SELECT nombre_cliente columna FROM cliente) AS t_resultante
+    GROUP BY columna;
+    ```
+
+5. Concatenar resultados de agrupamiento
+
+    ```sql
+    SELECT o.ciudad, GROUP_CONCAT(CONCAT_WS(' ', e.nombre, e.apellido1) ORDER BY e.nombre ASC SEPARATOR ', ') AS empleados
+    FROM empleado e
+    INNER JOIN oficina o ON e.codigo_oficina = o.codigo_oficina
+    GROUP BY o.ciudad;
+    ```
+
+6. Totales por cada agrupamiento
+
+    ```sql
+    
+    ```
