@@ -93,6 +93,7 @@ A continuación se mostraran algunos tips con SELECT, WHERE, GROUP BY y UPDATE p
     ```
 
 2. Filtrar por aggregate functions
+
     ```sql
     SELECT p.gama, p.dimensiones, COUNT(d.cantidad) total FROM producto p INNER JOIN detalle_pedido d ON p.codigo_producto = d.codigo_producto GROUP BY p.gama, p.dimensiones HAVING total > 10 ORDER BY p.gama ASC;
     ```
@@ -125,5 +126,92 @@ A continuación se mostraran algunos tips con SELECT, WHERE, GROUP BY y UPDATE p
 6. Totales por cada agrupamiento
 
     ```sql
-    
+    SELECT IFNULL(e.nombre, 'TOTAL') nombre_empleado, IFNULL(c.nombre_cliente, 'TOTAL') nombre_cliente, COUNT(*) total FROM empleado e 
+    INNER JOIN cliente c ON e.codigo_empleado = c.codigo_empleado_rep_ventas 
+    GROUP BY e.nombre, c.nombre_cliente WITH ROLLUP;
+    ```
+
+---
+
+## TIPS con UPDATE
+
+1. Editar utilizando el valor ya guardado
+
+    ```sql
+    UPDATE pago SET total = total + 29 WHERE codigo_cliente = 38;
+    SELECT * FROM pago;
+    -- ejecutar el siguiente código para regresar al valor original
+    UPDATE pago SET total = total - 29 WHERE codigo_cliente = 38;
+    SELECT * FROM pago;
+    ```
+
+2. Multiple agrupamiento
+
+    ```sql
+    -- primero agrego un valor por defecto, porque no tiene
+    ALTER TABLE pago ALTER COLUMN total SET DEFAULT 500;
+    -- se actualiza dato con valor por defecto
+    UPDATE pago SET total = DEFAULT WHERE codigo_cliente = 38;
+    SELECT * FROM pago;
+    -- ejecutar el siguiente código para regresar al valor original
+    UPDATE pago SET total = 1171 WHERE codigo_cliente = 38;
+    SELECT * FROM pago;
+    ```
+
+3. Editar obteniendo el valor por subconsulta
+
+    ```sql
+    UPDATE oficina SET linea_direccion2 = (
+        SELECT CONCAT(nombre,' ',apellido1) FROM empleado 
+        WHERE empleado.codigo_oficina = oficina.codigo_oficina AND codigo_empleado = 23
+    ) 
+    WHERE codigo_oficina = 'TOK-JP';
+    SELECT * FROM oficina;
+    -- ejecutar el siguiente código para regresar al valor original
+    UPDATE oficina SET linea_direccion2 = '' WHERE codigo_oficina = 'TOK-JP';
+    SELECT * FROM oficina;
+    ```
+
+4. Subconsultas en WHERE
+
+    ```sql
+    UPDATE oficina SET linea_direccion2 = 'Se cambió' 
+    WHERE oficina.codigo_oficina IN (
+        SELECT codigo_oficina FROM empleado WHERE codigo_empleado = 23
+    );
+    SELECT * FROM oficina;
+    -- ejecutar el siguiente código para regresar al valor original
+    UPDATE oficina SET linea_direccion2 = '' WHERE codigo_oficina = 'TOK-JP';
+    SELECT * FROM oficina;
+    ```
+
+5. UPDATE con JOIN
+
+    ```sql
+    UPDATE oficina o
+    INNER JOIN empleado e ON o.codigo_oficina = e.codigo_oficina 
+    SET o.linea_direccion2 = e.nombre 
+    WHERE e.codigo_empleado = 8;
+    SELECT * FROM oficina;
+    -- ejecutar el siguiente código para regresar al valor original
+    UPDATE oficina SET linea_direccion2 = '' WHERE codigo_oficina = 'MAD-ES';
+    SELECT * FROM oficina;
+    ```
+
+6. Utilizar JSON
+
+    ```sql
+    -- comvertir columna a tipo json ybactualizar el dato
+    ALTER TABLE gama_producto MODIFY imagen JSON;
+    UPDATE gama_producto SET imagen = '{"cambio":["tres","cuatro"]}'
+    WHERE gama = 'Frutales';
+    SELECT * FROM gama_producto;
+    -- actualizar objeto json
+    UPDATE gama_producto SET imagen = JSON_REPLACE(imagen, '$.cambio', JSON_ARRAY('uno', 'dos')) 
+    WHERE gama = 'Frutales';
+    SELECT * FROM gama_producto;
+    -- ejecutar el siguiente código para regresar al valor original
+    ALTER TABLE gama_producto MODIFY imagen VARCHAR(255);
+    UPDATE gama_producto SET imagen = NULL WHERE gama = 'Frutales';
+    SELECT * FROM gama_producto;
     ```
